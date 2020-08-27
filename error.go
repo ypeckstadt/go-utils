@@ -1,4 +1,4 @@
-package go_utils
+package utils
 
 // PanicWhenHasError panics when the error is not nil
 func PanicWhenHasError(err error) {
