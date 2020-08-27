@@ -1,33 +1,66 @@
 package utils
 
 import (
+	"errors"
+	"fmt"
 	"net/smtp"
 	"strconv"
+	"strings"
 )
 
+
+type Mail struct {
+	Name  string
+	Email string
+}
+
 type SendMailRequest struct {
-	// From email address we are sending from
-	From     string
+	// From email address and name we are sending from
+	From Mail
 
 	// To list email addresses we are sending email to
-	To       []string
+	To []Mail
 
 	// Host of SMTP server
-	Host     string
+	Host string
 
 	// Port of SMTP server
-	Port     int
+	Port int
 
-	Message  string
+	Message string
 
 	// Password of email address we are sending from
 	Password string
+
+	// Subject of the email
+	Subject string
 }
 
 // SendMail sends an email via SMTP server
 func SendMail(request SendMailRequest) error {
-	auth := smtp.PlainAuth("", request.From, request.Password, request.Host)
-	if err := smtp.SendMail(request.Host +":" + strconv.Itoa(request.Port), auth, request.From, request.To, []byte(request.Message)); err != nil {
+
+	// check if mail to targets have been provided
+	if len(request.To) == 0 {
+		return errors.New("no mail to specified")
+	}
+
+	var sb strings.Builder
+	var to []string
+
+	for _, mailTo := range request.To {
+		sb.WriteString(fmt.Sprintf("To: \"%v\" <%v>", mailTo.Name, mailTo.Email) + "\n")
+		to = append(to, mailTo.Email)
+	}
+
+	sb.WriteString(fmt.Sprintf("From: \"%v\" <%v>", request.From.Name, request.From.Email) + "\n")
+	sb.WriteString(fmt.Sprintf("Subject: %v", request.Subject) + "\n")
+	sb.WriteString("\n")
+	sb.WriteString(request.Message)
+
+	fmt.Print(sb.String())
+
+	auth := smtp.PlainAuth("", request.From.Email, request.Password, request.Host)
+	if err := smtp.SendMail(request.Host+":"+strconv.Itoa(request.Port), auth, request.From.Email, to, []byte(sb.String())); err != nil {
 		return err
 	}
 	return nil
