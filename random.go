@@ -1,6 +1,9 @@
 package utils
 
-import "math/rand"
+import (
+	"math/rand"
+	"time"
+)
 
 const codeBytes = "0123456789"
 
@@ -11,4 +14,11 @@ func GenerateRandomCode(n int) string {
 		b[i] = codeBytes[rand.Intn(len(codeBytes))]
 	}
 	return string(b)
+}
+
+// GetRandomElement returns a random element from a list
+func GetRandomElement(list interface{}) string {
+	rand.Seed(time.Now().UTC().UnixNano())
+	randomIndex := rand.Intn(len(list.([]string)))
+	return list.([]string)[randomIndex]
 }
