@@ -57,8 +57,6 @@ func SendMail(request SendMailRequest) error {
 	sb.WriteString("\n")
 	sb.WriteString(request.Message)
 
-	fmt.Print(sb.String())
-
 	auth := smtp.PlainAuth("", request.From.Email, request.Password, request.Host)
 	if err := smtp.SendMail(request.Host+":"+strconv.Itoa(request.Port), auth, request.From.Email, to, []byte(sb.String())); err != nil {
 		return err
