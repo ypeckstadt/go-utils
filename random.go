@@ -5,13 +5,11 @@ import (
 	"time"
 )
 
-const codeBytes = "0123456789"
-
 // GenerateRandomCode generates a random code consisting of digits only
-func GenerateRandomCode(n int) string {
+func GenerateRandomCode(n int, digits string) string {
 	b := make([]byte, n)
 	for i := range b {
-		b[i] = codeBytes[rand.Intn(len(codeBytes))]
+		b[i] = digits[rand.Intn(len(digits))]
 	}
 	return string(b)
 }
