@@ -21,3 +21,8 @@ func transformEncoding(rawReader io.Reader, trans transform.Transformer) (string
 func ToShiftJIS(str string) (string, error) {
 	return transformEncoding(strings.NewReader(str), japanese.ShiftJIS.NewEncoder())
 }
+
+// Convert a string encoding from UTF-8 to EUC-JP
+func ToEUCJP(str string) (string, error) {
+	return transformEncoding(strings.NewReader(str), japanese.EUCJP.NewEncoder())
+}
